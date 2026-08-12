@@ -388,7 +388,7 @@ def get_cached_gflops(model, input_shape, key):
 # SEARCH SPACE (ONLY your knobs)
 # ============================================================
 SEARCH_SPACE = {
-    "base_filters":  list(range(8, 64, 8)),   
+    "base_filters":  list(range(8, 257, 8)),   
     "kernel_size":   [1, 3, 5],
     "activation":    ["relu", "elu", "softmax", "tanh"],
     "norm_type":     ["batch", "layer", "group"],
