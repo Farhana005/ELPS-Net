@@ -668,6 +668,50 @@ def crowding_distance(front):
         for i in range(1, len(front) - 1):
             front[i]["_crowd"] += (front[i+1]["_obj"][j] - front[i-1]["_obj"][j]) / (vmax - vmin)
 
+def select_final_architecture(pareto,
+                              weights=(0.4,0.2,0.2,0.1,0.1)):
+
+    if len(pareto) == 0:
+        return None
+
+    dices  = np.array([-p["_obj"][0] for p in pareto])
+    ious   = np.array([-p["_obj"][1] for p in pareto])
+    hd95   = np.array([ p["_obj"][2] for p in pareto])
+    gflops = np.array([ p["_obj"][3] for p in pareto])
+    params = np.array([ p["_obj"][4] for p in pareto])
+
+
+    def normalize(x):
+        if np.max(x)-np.min(x) < 1e-12:
+            return np.ones_like(x)
+        return (x-x.min())/(x.max()-x.min())
+
+
+    # higher is better
+    dice_n  = normalize(dices)
+    iou_n   = normalize(ious)
+
+    hd95_n  = 1-normalize(hd95)
+    gflops_n= 1-normalize(gflops)
+    params_n= 1-normalize(params)
+
+
+    score = (
+        weights[0]*dice_n +
+        weights[1]*iou_n +
+        weights[2]*hd95_n +
+        weights[3]*gflops_n +
+        weights[4]*params_n
+    )
+
+
+    best_idx = np.argmax(score)
+
+    best = pareto[best_idx]
+    best["selection_score"] = float(score[best_idx])
+
+    return best
+
 def nsga2_select(pop, n_keep):
     fronts = fast_nondominated_sort(pop)
     selected = []
@@ -1058,7 +1102,19 @@ def run_pso_enas_resume(train_seq, val_seq, pop_size=50, generations=10, seed=42
         tf.keras.backend.clear_session()
         gc.collect()
 
-    return pareto
+    selected_arch = select_final_architecture(pareto)
+
+    print("\n===== FINAL SELECTED ELPS-Net =====")
+    for k in GENES:
+        print(k, ":", selected_arch[k])
+
+    print("Score:", selected_arch["selection_score"])
+    print("DSC:", -selected_arch["_obj"][0])
+    print("IoU:", -selected_arch["_obj"][1])
+    print("HD95:", selected_arch["_obj"][2])
+    print("Params:", selected_arch["_obj"][4])
+
+    return selected_arch
 
 # ============================================================
 # RUN
