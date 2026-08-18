@@ -53,8 +53,8 @@ DELETE_OLD_IF_FALSE = False
 # ============================================================
 # SAFE MODE (prevents kernel crash)
 # ============================================================
-SAFE_MODE = True              #  keep True unless you really need in-loop GFLOPs
-DO_GFLOPS_IN_LOOP = False     # keep False in SAFE_MODE
+SAFE_MODE = False              #  keep True unless you really need in-loop GFLOPs
+DO_GFLOPS_IN_LOOP = True     # keep False in SAFE_MODE
 
 # ============================================================
 # FIXED TRAIN SETTINGS
