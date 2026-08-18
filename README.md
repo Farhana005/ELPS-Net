@@ -1,4 +1,4 @@
-# ELPS-Net: Reliability-Aware PSO-LLM Fusion for Multi-Objective Evolutionary Neural Architecture Search in Medical Image Segmentation
+# Context-Aware LLM-Guided Neural Architecture Search for Medical Image Segmentation
 
 ## Overview
 
