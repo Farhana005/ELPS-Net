@@ -2,28 +2,32 @@
 
 ## Overview
 
-Medical image segmentation remains a fundamental yet challenging task due to heterogeneous anatomical structures, low-contrast boundaries, domain variability, and the difficulty of designing lightweight yet generalisable segmentation architectures. Although recent deep learning and neural architecture search (NAS) approaches have achieved promising performance, many existing methods still depend on manually designed feature interaction strategies, fixed optimisation behaviour, and computationally expensive architectures that limit scalability and cross-domain adaptability.
+Medical image segmentation requires architectures that can achieve high segmentation accuracy while maintaining computational efficiency across heterogeneous imaging settings. Existing evolutionary neural architecture search (NAS) methods commonly employ fixed or randomly scheduled mutation strategies, which limit their ability to adapt the search process according to the evolving optimisation state.
 
-To address these challenges, we propose **ELPS-Net**, a reliability-aware evolutionary neural architecture search framework that integrates **Particle Swarm Optimisation (PSO)** and **Large Language Models (LLMs)** for adaptive architecture evolution in medical image segmentation. The proposed framework automatically discovers compact and high-performing segmentation architectures while balancing segmentation accuracy, computational efficiency, and reliability-aware generalisation.
+To address this limitation, we propose **ELPS-Net**, a context-aware LLM-guided evolutionary NAS framework for lightweight medical image segmentation. ELPS-Net combines a **Particle Swarm Optimisation (PSO)-inspired mutation-intensity proposal** with bounded **Large Language Model (LLM) guidance** for mutation-intensity correction and targeted gene-level modification. Rather than directly generating architectures, the LLM receives contextual information from the current evolutionary state and provides constrained guidance on both the mutation intensity and the architectural genes to be modified. This enables adaptive exploration and exploitation throughout the search process.
 
-ELPS-Net incorporates three specialised architectural modules:
+The search is conducted over operator-level configurations within a fixed hierarchical encoder--decoder supernet containing three task-oriented modules:
 
-* **Agra** – Structural representation preservation for enhanced anatomical boundary retention.
-* **Rota** – Lightweight multi-scale contextual aggregation for effective long-range feature modelling.
-* **Petra** – Reliability-aware feature reconstruction for stable decoder feature refinement.
+* **Agra** – structural refinement for preserving anatomically relevant representations.
+* **Rota** – lightweight multi-scale contextual aggregation for capturing information across different receptive fields.
+* **Petra** – adaptive encoder--decoder fusion for selectively integrating features across network stages.
 
-Furthermore, ELPS-Net introduces a novel **PSO-LLM fusion mutation strategy**, where PSO dynamically optimises mutation behaviour while an LLM provides targeted architecture-level mutation guidance. This enables adaptive exploration and exploitation during evolutionary search, resulting in more efficient discovery of compact and accurate segmentation architectures.
+ELPS-Net employs a constrained **multi-objective evolutionary optimisation** strategy with Pareto-based selection to balance segmentation quality and architectural complexity. On the validation splits of **ACDC**, **MnM**, and **BraTS 2021**, the discovered architecture achieves DSC scores of **94.29%**, **91.13%**, and **92.45%**, respectively, while requiring only **0.48M parameters** and **4.38 GFLOPs**. Cross-dataset experiments on **MMWHS**, **CHAOS**, and **BraTS 2020** further demonstrate competitive validation performance after fine-tuning.
 
-To the best of our knowledge, ELPS-Net is the first reliability-aware medical image segmentation NAS framework that combines **PSO-based adaptive mutation optimisation** with **LLM-guided targeted architectural mutation** within a unified evolutionary search process.
+Overall, ELPS-Net provides a lightweight and adaptive evolutionary NAS framework in which PSO-inspired mutation control and bounded context-aware LLM guidance jointly improve architecture exploration without allowing the LLM to directly generate candidate architectures.
 
 ## Key Features
 
-* Reliability-aware evolutionary neural architecture search.
-* PSO-guided adaptive mutation rate optimisation.
-* LLM-guided targeted architectural mutation.
-* Lightweight segmentation architecture discovery.
-* Multi-objective optimisation of accuracy, efficiency, and reliability.
-* Strong cross-domain generalisation across heterogeneous medical imaging datasets.
+* **Context-aware evolutionary NAS** for lightweight medical image segmentation.
+* **PSO-inspired adaptive mutation-intensity proposal** based on the current search state.
+* **Bounded LLM-guided mutation correction** rather than unrestricted LLM-based architecture generation.
+* **Targeted gene-level mutation**, allowing the LLM to identify architectural variables most relevant to the current evolutionary context.
+* **Operator-level architecture search** within a fixed hierarchical encoder--decoder supernet.
+* **Task-oriented Agra, Rota, and Petra modules** for structural refinement, multi-scale contextual aggregation, and adaptive feature fusion.
+* **Pareto-based multi-objective optimisation** balancing segmentation quality and architectural complexity.
+* **Compact architecture discovery**, achieving competitive segmentation performance with only **0.48M parameters and 4.38 GFLOPs**.
+* **Cross-dataset adaptability** demonstrated through fine-tuning on heterogeneous medical imaging datasets.
+
 
 ## Experimental Results
 
@@ -43,23 +47,16 @@ ELPS-Net was extensively evaluated on multiple benchmark medical image segmentat
 
 ### Generalisation Evaluation
 
-The discovered architectures were further evaluated on:
-
-* MMWHS
-* CHAOS
-* BraTS 2020
-
-demonstrating strong cross-domain robustness and reliability while maintaining computational efficiency.
+The discovered architecture was further fine-tuned and evaluated on **MMWHS, CHAOS, and BraTS 2020**, demonstrating reliable cross-domain adaptability while maintaining computational efficiency.
 
 ## Framework
 
 ELPS-Net consists of:
 
-1. Evolutionary Neural Architecture Search (ENAS)
-2. PSO-Based Adaptive Mutation Optimisation
-3. LLM-Guided Targeted Mutation Strategy
-4. Agra Module
-5. Rota Module
-6. Petra Module
-7. Multi-Objective Reliability-Aware Architecture Selection
-
+1. **Evolutionary Neural Architecture Search (ENAS)**
+2. **PSO-Inspired Adaptive Mutation Control**
+3. **LLM-Guided Targeted Mutation**
+4. **Agra** – Structural refinement
+5. **Rota** – Multi-scale contextual aggregation
+6. **Petra** – Adaptive feature fusion
+7. **Pareto-Based Multi-Objective Architecture Selection**
